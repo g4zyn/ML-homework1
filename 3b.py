@@ -12,7 +12,7 @@ def config():
     return filename, n_classes, n_features, k_range
 
 class KNN():
-    def __init__(self, n_features, n_classes, data, k):
+    def __init__(self, n_features, n_classes, k, data):
         self.n_features = n_features
         self.n_classes = n_classes
         self.data = data
@@ -28,7 +28,7 @@ class KNN():
         self.classes = tf.gather(self.Y, idxs)
         self.dists = tf.gather(dists, idxs)
         
-        self.classes_one_hot = tf.one_hot(self.classes, n_classes)
+        self.classes_one_hot = tf.one_hot(self.classes, self.n_classes)
         self.scores = tf.reduce_sum(self.classes_one_hot, axis=0)
         
         self.hyp = tf.argmax(self.scores) 
@@ -45,7 +45,7 @@ class KNN():
                 feed = {
                     self.X: self.data['x'],
                     self.Y: self.data['y'],
-                    self.Q: self.data['x'][i]
+                    self.Q: test_data['x'][i]
                 }
                 hyp_val = sess.run(self.hyp, feed_dict=feed)
     
@@ -122,7 +122,7 @@ def main():
     avg_accuracy = 0
     
     for i in range(k_range[0], k_range[1]+1):
-        knn = KNN(n_features, n_classes, train_data, i)
+        knn = KNN(n_features, n_classes, i, train_data)
         accuracy = knn.predict(test_data)
         avg_accuracy += accuracy
         accuracies.append(accuracy)
