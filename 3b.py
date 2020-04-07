@@ -93,15 +93,13 @@ def main():
     
     data = get_data(filename)
     
-    predictions = len(data['y'])
+    n_samples = data['x'].shape[0]
     
-    for i in range(0, predictions):
+    for i in range(0, n_samples):
         if data['y'][i] == 'B':
             data['y'][i] = 0
         else:
             data['y'][i] = 1
-            
-    n_samples = data['x'].shape[0]
     
     shuffle(data, n_samples)
     normalize(data)
