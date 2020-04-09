@@ -49,13 +49,13 @@ class KNN:
         self.hyp = tf.argmax(self.scores)
         
     # Ako imamo odgovore za upit racunamo accuracy
-    def predict(self, query_data):
+    def predict(self, test_data):
         
         with tf.Session() as sess:
             
             sess.run(tf.global_variables_initializer())
             
-            n_queries = query_data['x'].shape[0]
+            n_queries = test_data['x'].shape[0]
             matches = 0
             
             for i in range(n_queries):
@@ -63,13 +63,13 @@ class KNN:
                 feed = {
                     self.X: self.data['x'],
                     self.Y: self.data['y'],
-                    self.Q: self.data['x'][i]
+                    self.Q: test_data['x'][i]
                 }
                 
                 hyp_val = sess.run(self.hyp, feed_dict=feed)
                 
-                if query_data['y'] is not None:
-                    actual = query_data['y'][i]
+                if test_data['y'] is not None:
+                    actual = test_data['y'][i]
                     match = (int(hyp_val) == int(actual))
                     if match:
                         matches += 1
@@ -140,7 +140,7 @@ def main():
     accuracy = knn.predict(test_data)
     
     print('Accuracy: ', accuracy)
-    
+ 
     idxs_0 = []
     idxs_1 = []
     
