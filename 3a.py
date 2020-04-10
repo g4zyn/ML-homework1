@@ -8,7 +8,7 @@ def config():
     filename = './data/Prostate_Cancer.csv'
     k = 3
     n_classes = 2
-    n_features = 4
+    n_features = 2
     
     return filename, k, n_classes, n_features
 
@@ -19,6 +19,7 @@ class KNN:
         self.n_classes = n_classes
         self.data = data
         self.k = k
+        self.predictions = []
         # self.weighted = weighted
         
         # Model 
@@ -81,10 +82,27 @@ class KNN:
             
             return acurracy
         
+
+    def get_predict_value(self, query_data):
+        with tf.Session() as sess:
+            sess.run(tf.global_variables_initializer())
+            n_queies = query_data.shape[0]
+
+            for i in range(n_queies):
+                feed = {
+                    self.X: self.data['x'],
+                    self.Y: self.data['y'],
+                    self.Q: query_data[i]
+                }
+                hyp_val = sess.run(self.hyp, feed_dict=feed)
+                self.predictions.append(hyp_val)
+
+            return np.array(self.predictions)
+
 # Get data from file and store it in data dict
 def get_data(filename):
     data = dict()
-    data['x'] = np.loadtxt(filename, delimiter=',', skiprows=1, usecols=(2, 3, 4, 5))
+    data['x'] = np.loadtxt(filename, delimiter=',', skiprows=1, usecols=(range(3,5)))
     data['y'] = np.loadtxt(filename, dtype=str, delimiter=',', skiprows=1, usecols=1)
     
     return data
@@ -99,12 +117,34 @@ def shuffle(data, n_samples):
 def normalize(data):
     data['x'] = (data['x'] - np.mean(data['x'], axis=0)) / np.std(data['x'], axis=0)
     
-# Plot first graph
-def show_graph(data, idxs_0, idxs_1):
+# Plot data graph
+def show_data(data, idxs_0, idxs_1):
     plt.scatter(data['x'][idxs_0, 0], data['x'][idxs_0, 1], c='b', edgecolors='k', label='benigni')
     plt.scatter(data['x'][idxs_1, 0], data['x'][idxs_1, 1], c='r', edgecolors='k', label='manigni')
     plt.legend()
     plt.show()
+
+# Plot class classification contour
+def plot_contour(knn, data):
+
+    step_size = 0.25
+
+    arange0 = np.arange(min(data['x'][:, 0]), max(data['x'][:, 0] + step_size), step_size)
+    arange1 = np.arange(min(data['x'][:, 1]), max(data['x'][:, 1] + step_size), step_size)
+
+    x1, y2 = np.meshgrid(arange0, arange1)
+
+    x_feed = np.vstack((x1.flatten(), y2.flatten())).T
+
+    predict_val = knn.get_predict_value(x_feed)
+
+    pred_plot = predict_val.reshape([x1.shape[0], x1.shape[1]])
+
+    from matplotlib.colors import LinearSegmentedColormap
+
+    classes_cmap = LinearSegmentedColormap.from_list('classes_cmap', ['dimgray', 'lightyellow'])
+
+    plt.contourf(x1, y2, pred_plot, cmap=classes_cmap, alpha=0.7)
     
 def main():
     
@@ -151,8 +191,10 @@ def main():
         else:
             idxs_1.append(i)
         
-    # Graph 1
-    show_graph(train_data, idxs_0, idxs_1)
+    # Show graph
+    plot_contour(knn, data)
+    show_data(train_data, idxs_0, idxs_1)
+    
     
 if __name__ == '__main__':
     main()
