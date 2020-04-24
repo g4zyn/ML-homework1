@@ -107,6 +107,10 @@ def main():
         plt.plot(xs[:, 0].tolist(), hyp_val.tolist(), color=colors[i], label='lmbd={}'.format(lambdas[i]))
         final_cost_f.append(final_loss)
         
+    # writer = tf.summary.FileWriter('.')
+    # writer.add_graph(tf.get_default_graph())
+    # writer.flush()
+
     # Graph 1
     plt.xlim([-2, 4])
     plt.ylim([-3, 2])
