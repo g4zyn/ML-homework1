@@ -1,1 +1,55 @@
-TODO popuniti odgovorima na pitanja iz problema 1
+1. Koja je razlika između k-fold, leave one out i random subsampling cross validation 
+
+Cross validation - tehnika koja se koristi u statistici koja deli odredjeni data set u podskupove. 
+Treniramo podatke na jednom od podskupova(subset) a drugi podskup koristimo da vidimo performanse naseg modela. 
+Da bi smanjili varijabilnost primenjujemo cross validation vise puta sa razlicitim podskupovima. 
+Cross validation nam daje preciznije procene naseg modela.
+
+Leave one out - delimo data set u dva dela. Prvi deo ima single posmatranje sto predstavlja nasu test data, 
+a drugi deo ima vise posmatranja sto predstavlja nasu trening data. 
+Primer: ako imamo data set sa N posmatranja onda trening data poseduje N-1 posmatranja dok test data poseduje 1 posmatranje.
+
+Prednosti:
+Mnogo manje biasa jer smo iskoristili skoro ceo set za trening
+Manje slucajnosti u trening/test podacima, jer primenom ove thenike vise puta dobijamo isti rezultat
+Mane:
+Funkcija troska (Mean squared error) ce se razlikovati jer test data koristi jedno posmatranje, ovo moze dovesti do njenih promena
+Izvrsenje kosta jer model moramo N puta da fitujemo
+
+K-fold - na nasumican nacin delimo data set u K grupa iste velicine. 
+Prva grupa se koristi za testiranje dok ostalih K-1 se koriste za treniranje. 
+Proces se ponavlja K puta i svaki put se druga grupa koristi za validaciju. 
+Ponavljajuci proces K puta dobili smo funkciju troska koja je K puta MSE. Funkcija troska = 1/k *MSE 
+
+Prednosti :
+Vremeizracunavanja je smanjen jer proces ponavljamo 10 puta jer obicno uzimamo da nam je K izmedju 5 i 10.
+Smanjen bias
+Svaki data point se testira jednom a trenira K-1 puta
+Mane :
+Trening algoritam je dosta kompjuterski zahtevan jer algoritam pokrecemo iz pocetka K puta
+
+Random subsampling - Na radnom nacin podeli data set u trening/testing set dok velicina svakog seta se odredjuje. 
+
+Prednosti :
+Dobar nacin kada baratamo sa velikom kolicinom podataka
+Mane :
+MSE zavisi od same podele, razlicite podele daju razlicite MSE
+
+
+2. Objasniti razliku između Gaussian, Multinomial i Bernouli Naive Bayes metoda. 
+
+Gaussian - koristimo ga kada imamo kontinulane vrednosti cije verovatnoce mogu da se modeluju gausovom raspodelom.
+Multinomial - koristimo kada imamo diskretne podatke, gde vrednosti predstavljaju ucestalost nekog elementa 
+(primer: ocene filma koje idu od 1 do 5, svaka ocena ima odredjuenu frekvenciju ucestalosti)
+Bernouli - ako je X random bernulijeva promenljiva, mozemo da predpostavimo samo dve vrednosti 0 ili 1 
+(primer: 0 - nismo nasli rec u nekom tekstu, 1 - nasli smo rec u nekom tekstu)
+
+3. Šta je “linearna separabilnost” (linear separability)? Da li su podaci iz skupa iris.csv linearno separabilni 
+(objasniti šta se primećuje)?
+
+Linearna separabilnost - proveravamo da li mozemo da odvojimo tacke u N-dimenzionalnom prostoru koristeci N-1 dimenzija. 
+Primer: Imamo pravu i uzmemo bilo koja dva broja na toj pravi. 
+Jedna opcija je da smo uzeli dva ista broja, druga opcija je da smo uzeli dva razlicita broja. 
+Ako smo uzeli dva razlicita broja uvek mozemo da nadjemo broj koji se nalazi izmedju njih, taj broj “razdvaja” ova dva.
+
+
